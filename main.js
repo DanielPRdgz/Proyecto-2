@@ -173,7 +173,7 @@ const products = [
 ]
 let selectedSeller = ''
 let filterValue = NaN
-//!----------FILTRAR POR VENDEDOR----------------
+//!----------FILTRAR POR VENDEDOR Y PRECIO----------------
 const filterCombined = () => {
   const filteredProducts = products.filter((product) => {
     const sellerMatch =
@@ -184,32 +184,6 @@ const filterCombined = () => {
   productsSection.innerHTML = ''
   printHelmets(filteredProducts)
 }
-
-//Creamos la función filtrar, dentro de ésta hacemos un array vacío.
-const filterBySeller = () => {
-  const filtered = []
-  for (const product of products) {
-    if (selectedSeller === product.seller) {
-      filtered.push(product)
-    }
-  }
-  productsSection.innerHTML = ''
-  printHelmets(filtered)
-}
-
-//*---------Rellenar Vendedores---------------
-//Creo un array vacio (sellers) y declaro la variable vacia seller.
-//Rellenar el select, con lógica. Si no está en el array, entonces envia el vendedor.
-const sellers = []
-
-const fillSellers = (helmets) => {
-  for (const helmet of helmets) {
-    if (!sellers.includes(helmet.seller)) {
-      sellers.push(helmet.seller)
-    }
-  }
-}
-fillSellers(products)
 
 //? -----CLEAN------
 const cleanfilter = () => {
@@ -230,6 +204,19 @@ divFilter.classList.add('divFilter')
 //divFilter dentro de la filtersection
 
 //!----CREACIÓN SELECT MODEL-------
+//*---------Rellenar Vendedores---------------
+//Creo un array vacio (sellers) y declaro la variable vacia seller.
+//Rellenar el select, con lógica. Si no está en el array, entonces envia el vendedor.
+const sellers = []
+
+const fillSellers = (helmets) => {
+  for (const helmet of helmets) {
+    if (!sellers.includes(helmet.seller)) {
+      sellers.push(helmet.seller)
+    }
+  }
+}
+fillSellers(products)
 
 const createSelectModel = () => {
   const selectModel = document.createElement('select')
@@ -290,18 +277,6 @@ const printHelmets = (helmets) => {
     divHelmets.appendChild(divHelmet)
   }
   productsSection.appendChild(divHelmets)
-}
-
-//!----------FILTRAR POR PRECIO----------------
-const filterprice = (filterValue) => {
-  const filteredProducts = []
-  for (let i = 0; i < products.length; i++) {
-    if (products[i].price < filterValue || isNaN(filterValue)) {
-      filteredProducts.push(products[i])
-    }
-  }
-  productsSection.textContent = ''
-  printHelmets(filteredProducts)
 }
 
 //!----CREACIÓN INPUT MODEL-------
