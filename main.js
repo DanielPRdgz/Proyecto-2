@@ -89,7 +89,7 @@ footer.appendChild(navfooter)
 
 const products = [
   {
-    name: 'SPARTAN RS',
+    name: 'SHARK SPARTAN RS',
     price: 577,
     stars: 4,
     seller: 'Shark',
@@ -97,7 +97,7 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629045/HE8156EDSA_SHARK-HELMETS-SPARTAN-RS-SHAWN-MAT_ps_01_chbbu6.webp'
   },
   {
-    name: 'Thunder GP Aero',
+    name: 'LS2 Thunder GP Aero',
     price: 444,
     stars: 1,
     seller: 'LS2',
@@ -105,7 +105,7 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709634167/8ii_fas1xu.png'
   },
   {
-    name: 'SKWAL i3',
+    name: 'SHARK SKWAL i3',
     price: 299,
     stars: 3,
     seller: 'Shark',
@@ -113,7 +113,7 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629045/HE0822EKAR_SHARK-HELMETS-SKWAL-I3-LINIK-BLACK-ANTHRACITE-RED_ps_01_n4nmpu.webp'
   },
   {
-    name: 'X-SPR PRO',
+    name: 'SHOEI X-SPR PRO',
     price: 600,
     stars: 5,
     seller: 'SHOEI',
@@ -121,7 +121,7 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629045/01-img-shoei-casco-moto-xspr-pro_khci7o.png'
   },
   {
-    name: 'BOB II',
+    name: 'LS2 BOB II',
     price: 32,
     stars: 1,
     seller: 'LS2',
@@ -130,7 +130,7 @@ const products = [
   },
 
   {
-    name: 'Exo R1 Evo',
+    name: 'SCORPION Exo R1 Evo',
     price: 326,
     stars: 4,
     seller: 'Scorpion',
@@ -138,7 +138,7 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629045/A_scorpionEXOR1CARBONA_SOLID_MatBla_getstung-1024x1024-1_vtuc3l.png'
   },
   {
-    name: 'i100',
+    name: 'HJC i100',
     price: 180,
     stars: 3,
     seller: 'HJC',
@@ -146,7 +146,7 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629045/I100_SOLID_PEARL_WHITE_5_g8daum.webp'
   },
   {
-    name: 'RPHA 1',
+    name: 'HJC RPHA 1',
     price: 444,
     stars: 4,
 
@@ -155,7 +155,7 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629045/mc21___rpha_1_quartararo_le_mans_special_1_mnwqr8.webp'
   },
   {
-    name: 'Concept-XE',
+    name: 'ARAI Concept-XE',
     price: 234,
     stars: 5,
     seller: 'ARAI',
@@ -163,7 +163,7 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629046/thumbnail-big_n2mf74.png'
   },
   {
-    name: 'Quantic',
+    name: 'ARAI Quantic',
     price: 554,
     stars: 5,
     seller: 'ARAI',
@@ -171,13 +171,25 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629046/thumbnail-big_1_oyjluy.png'
   }
 ]
-
+let selectedSeller = ''
+let filterValue = NaN
 //!----------FILTRAR POR VENDEDOR----------------
+const filterCombined = () => {
+  const filteredProducts = products.filter((product) => {
+    const sellerMatch =
+      selectedSeller === '' || product.seller === selectedSeller
+    const priceMatch = isNaN(filterValue) || product.price <= filterValue
+    return sellerMatch && priceMatch
+  })
+  productsSection.innerHTML = ''
+  printHelmets(filteredProducts)
+}
+
 //Creamos la función filtrar, dentro de ésta hacemos un array vacío.
-const filter = () => {
+const filterBySeller = () => {
   const filtered = []
   for (const product of products) {
-    if (seller === product.seller) {
+    if (selectedSeller === product.seller) {
       filtered.push(product)
     }
   }
@@ -189,7 +201,7 @@ const filter = () => {
 //Creo un array vacio (sellers) y declaro la variable vacia seller.
 //Rellenar el select, con lógica. Si no está en el array, entonces envia el vendedor.
 const sellers = []
-let seller = ''
+
 const fillSellers = (helmets) => {
   for (const helmet of helmets) {
     if (!sellers.includes(helmet.seller)) {
@@ -201,8 +213,15 @@ fillSellers(products)
 
 //? -----CLEAN------
 const cleanfilter = () => {
+  selectedSeller = ''
+  filterValue = NaN
+
   productsSection.innerHTML = ''
   printHelmets(products)
+  const selectModel = divFilter.querySelector('select')
+  selectModel.selectedIndex = 0
+  const input = divFilter.querySelector('input[type=number]')
+  input.value = ''
 }
 
 //divFilter dentro de la filtersection
@@ -214,6 +233,11 @@ divFilter.classList.add('divFilter')
 
 const createSelectModel = () => {
   const selectModel = document.createElement('select')
+  const defaultSelect = document.createElement('option')
+  defaultSelect.value = ''
+  defaultSelect.textContent = 'Seleccionar vendedor'
+  selectModel.appendChild(defaultSelect)
+
   for (const seller of sellers) {
     const option = document.createElement('option')
     option.value = seller
@@ -224,8 +248,8 @@ const createSelectModel = () => {
   filterSection.appendChild(divFilter)
 
   selectModel.addEventListener('change', (e) => {
-    seller = e.target.value
-    filter()
+    selectedSeller = e.target.value
+    filterCombined()
   })
 }
 
@@ -267,15 +291,13 @@ const printHelmets = (helmets) => {
   }
   productsSection.appendChild(divHelmets)
 }
+
 //!----------FILTRAR POR PRECIO----------------
 const filterprice = (filterValue) => {
   const filteredProducts = []
   for (let i = 0; i < products.length; i++) {
-    if (products[i].price < filterValue) {
+    if (products[i].price < filterValue || isNaN(filterValue)) {
       filteredProducts.push(products[i])
-    } else if (!filterValue) {
-      //Si no hay nada escrito en el input. Entonces no hagas nada.
-      return
     }
   }
   productsSection.textContent = ''
@@ -295,8 +317,8 @@ const createInputMoney = () => {
   divFilter.appendChild(divMoney)
   filterSection.appendChild(divFilter)
   button.addEventListener('click', () => {
-    const filterValue = parseFloat(input.value) //Convierto a numero y recojo el valor del input
-    filterprice(filterValue) //Llamo a la función filterPrice con el parametro del valor del input.
+    filterValue = parseFloat(input.value) //Convierto a numero y recojo el valor del input
+    filterCombined() //Llamo a la función filterPrice con el parametro del valor del input.
   })
   const buttonClean = document.createElement('button')
   buttonClean.textContent = 'Limpiar'
