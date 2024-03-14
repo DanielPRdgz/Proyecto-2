@@ -171,15 +171,15 @@ const products = [
       'https://res.cloudinary.com/dj1axfhui/image/upload/v1709629046/thumbnail-big_1_oyjluy.png'
   }
 ]
-let selectedSeller = ''
+
 let filterValue = NaN
-//!----------FILTRAR POR VENDEDOR Y PRECIO----------------
 const filterCombined = () => {
   const filteredProducts = products.filter((product) => {
+    //Recorrer el array de productos para que pase un filtro. O No ha seleccionado o debe coincidir el vendedor del producto con el seleccionado.
     const sellerMatch =
       selectedSeller === '' || product.seller === selectedSeller
-    const priceMatch = isNaN(filterValue) || product.price <= filterValue
-    return sellerMatch && priceMatch
+    const priceMatch = isNaN(filterValue) || product.price <= filterValue //Si filter value no es un numero se pasa de lo contrario debe ser menor o igual al valor del filtro.
+    return sellerMatch && priceMatch //si ambas son ok se devuelve true.
   })
   productsSection.innerHTML = ''
   printHelmets(filteredProducts)
@@ -201,14 +201,12 @@ const cleanfilter = () => {
 //divFilter dentro de la filtersection
 const divFilter = document.createElement('div')
 divFilter.classList.add('divFilter')
-//divFilter dentro de la filtersection
 
-//!----CREACIÓN SELECT MODEL-------
-//*---------Rellenar Vendedores---------------
-//Creo un array vacio (sellers) y declaro la variable vacia seller.
+//*---------Rellenar Vendedores para Select---------------
+//Creo un array vacio (sellers).
 //Rellenar el select, con lógica. Si no está en el array, entonces envia el vendedor.
-const sellers = []
 
+const sellers = []
 const fillSellers = (helmets) => {
   for (const helmet of helmets) {
     if (!sellers.includes(helmet.seller)) {
@@ -217,15 +215,18 @@ const fillSellers = (helmets) => {
   }
 }
 fillSellers(products)
+//*FUNCION SELECT SELLERS
+let selectedSeller = ''
 
 const createSelectModel = () => {
-  const selectModel = document.createElement('select')
-  const defaultSelect = document.createElement('option')
+  const selectModel = document.createElement('select') //Creamos sellers para los vendedores
+  const defaultSelect = document.createElement('option') //Creamos una opcion fuera de bucle para ser deafult. Y la agregamos al select.
   defaultSelect.value = ''
   defaultSelect.textContent = 'Seleccionar vendedor'
   selectModel.appendChild(defaultSelect)
 
   for (const seller of sellers) {
+    //recorremos el array de vendedores.(Que ha sido creado y rellenado anteriormente y creamos una option para cada uno de los vendedores, cuyo option value y text content va  ser el propio seller. Posteriormente lo añadimos.)
     const option = document.createElement('option')
     option.value = seller
     option.textContent = seller
@@ -235,6 +236,7 @@ const createSelectModel = () => {
   filterSection.appendChild(divFilter)
 
   selectModel.addEventListener('change', (e) => {
+    //?Agregamos funcionalidad al select. Para basicamente al cambiar reconozca como valor y se almacene el selected Seller. Luego llamamos a filtercombined.
     selectedSeller = e.target.value
     filterCombined()
   })
@@ -244,9 +246,10 @@ const createSelectModel = () => {
 const printHelmets = (helmets) => {
   const divHelmets = document.createElement('div')
   divHelmets.classList.add('helmetsContainer')
-  divHelmets.innerHTML = ''
+  divHelmets.innerHTML = '' //limpio cada vez que se imprima
 
   for (const helmet of helmets) {
+    //recorro el array y creo por cada uno:
     const divHelmet = document.createElement('div')
     const divImg = document.createElement('div')
     const img = document.createElement('img')
@@ -254,9 +257,11 @@ const printHelmets = (helmets) => {
     const divStars = document.createElement('div')
     const price = document.createElement('p')
     for (let i = 1; i <= 5; i++) {
+      //recorro hasta 5 e i que es 1,2,3,4,5, le agrego un div.
       const star = document.createElement('div')
       star.className = 'star'
       if (helmet.stars >= i) {
+        //si las estrellas son mayor que la i, es decir, i=1 star=1 star(1)<=1 entonces pinta; i=2,i=3,i=4,i=5
         star.classList.add('starEv')
       }
       divStars.appendChild(star)
@@ -279,7 +284,6 @@ const printHelmets = (helmets) => {
   productsSection.appendChild(divHelmets)
 }
 
-//!----CREACIÓN INPUT MODEL-------
 const createInputMoney = () => {
   const divMoney = document.createElement('div')
   const input = document.createElement('input')
@@ -292,8 +296,8 @@ const createInputMoney = () => {
   divFilter.appendChild(divMoney)
   filterSection.appendChild(divFilter)
   button.addEventListener('click', () => {
-    filterValue = parseFloat(input.value) //Convierto a numero y recojo el valor del input
-    filterCombined() //Llamo a la función filterPrice con el parametro del valor del input.
+    filterValue = parseFloat(input.value)
+    filterCombined()
   })
   const buttonClean = document.createElement('button')
   buttonClean.textContent = 'Limpiar'
